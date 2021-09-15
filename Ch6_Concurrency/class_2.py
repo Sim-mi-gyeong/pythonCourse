@@ -93,7 +93,7 @@ print('\n\n')
 # chaining : 앞의 것과 뒤에 것(서로 다른 iterable한 것)을 묶어 하나의 리스트로 만들기
 print('연결 1')
 gen5 = itertools.chain('ABCDE', range(1, 11, 2))
-print('list(gen5 : ', list(gen5))
+print('list(gen5) : ', list(gen5))
 print('\n')
 
 # 연결2
