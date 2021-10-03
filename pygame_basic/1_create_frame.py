@@ -10,3 +10,4 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 # 화면 타이틀 설정 - 게임 화면이 뜰 때 글자로 표시
 pygame.display.set_caption("Nado Game")  # 게임 이름
 
+
