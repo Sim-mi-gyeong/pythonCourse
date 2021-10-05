@@ -33,8 +33,9 @@ to_y = 0
 running = True   # 게임이 진행중인가?
 
 while running:
-    dt = clock.tick(30)   # 게임화면의 초당 프레임 수를 설정
+    dt = clock.tick(60)   # 게임화면의 초당 프레임 수를 설정
 
+    print("fps : " + str(clock.get_fps()))
 
     for event in pygame.event.get():   # 어떤 이벤트가 발생하였는가?(마우스나 키보드의 입력 및 동작이 들어오는지 확인)
         if event.type == pygame.QUIT:   # 창이 닫히는 이벤트가 발생하였는가?(pygame 창을 껐을 때 발생)
