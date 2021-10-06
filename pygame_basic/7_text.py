@@ -32,6 +32,14 @@ to_y = 0
 # 이동 속도
 character_spped = 0.6
 
+# 적 enemy 캐락터
+enemy = pygame.image.load("/Users/simmigyeong/Documents/GitHub/vscode/pythonCourse/pygame_basic/enemy.png")
+enemy_size = enemy.get_rect().size   # 이미지의 크기를 구해옴. (70, 70)
+enemy_width = enemy_size[0]   # 캐릭터의 가로 크기
+enemy_height = enemy_size[1]   # 캐릭터의 세로 크기
+enemy_x_pos =  (screen_width / 2) - (enemy_width / 2) # 화면 가로의 절반 크기에 해당하는 곳에 위치(가로 위치)(x, y 좌표 기준 상하좌우로 움직일 수 있음)
+enemy_y_pos = (screen_height / 2) - (enemy_height / 2) # 화면 세로 크기 가장 아래에 해당하는 곳에 위치(세로 위치)
+
 # 이벤트 루프
 running = True   # 게임이 진행중인가?
 
@@ -85,6 +93,22 @@ while running:
     elif character_y_pos > screen_height - character_height:   # 화면 아래로 벗어나면 
         character_y_pos = screen_height - character_height
 
+    # 충돌 처리를 위한 rect 정보 업데이트
+    character_rect = character.get_rect()   # 캐릭터가 가지는 rectangle 정보 가져오기
+                                            # (위치는 변하지만, rectangle 정보는 항상 같은 값) 가
+    character_rect.left = character_x_pos
+    character_rect.top = character_y_pos
+
+    enemy_rect = enemy.get_rect()
+    enemy_rect.left = enemy_x_pos   # 현재 enemy의 위치 변화 없음
+    enemy_rect.top = enemy_y_pos    # 이 부분을 주석해제하면 enemy_rect에 반영되지 않음
+
+    # 충돌 체크
+    if character_rect.colliderect(enemy_rect):
+        print("충돌했어요")
+        running = False   # 게임 종료
+
+
 
     # background 이미지를 실제로 그려줌.
     screen.blit(background, (0, 0))   # 배경 그리기 / (0,0)은 가장 왼쪽 위
@@ -92,6 +116,8 @@ while running:
     # 캐릭터 그리기
     screen.blit(character, (character_x_pos, character_y_pos))
 
+    # 적 그리기
+    screen.blit(enemy, (enemy_x_pos, enemy_y_pos))
 
     # 매 프레임마다 화면을 새로 그려주는 동작
     pygame.display.update()   # 게임 화면을 다시 그리기! (계속해서 호출이 되어야 함.)

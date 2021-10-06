@@ -32,6 +32,24 @@ to_y = 0
 # 이동 속도
 character_spped = 0.6
 
+# 적 enemy 캐락터
+enemy = pygame.image.load("/Users/simmigyeong/Documents/GitHub/vscode/pythonCourse/pygame_basic/enemy.png")
+enemy_size = enemy.get_rect().size   # 이미지의 크기를 구해옴. (70, 70)
+enemy_width = enemy_size[0]   # 캐릭터의 가로 크기
+enemy_height = enemy_size[1]   # 캐릭터의 세로 크기
+enemy_x_pos =  (screen_width / 2) - (enemy_width / 2) # 화면 가로의 절반 크기에 해당하는 곳에 위치(가로 위치)(x, y 좌표 기준 상하좌우로 움직일 수 있음)
+enemy_y_pos = (screen_height / 2) - (enemy_height / 2) # 화면 세로 크기 가장 아래에 해당하는 곳에 위치(세로 위치)
+
+
+# 폰트 정의
+game_font = pygame.font.Font(None, 40)   # 폰트 객체 생성(폰트, 크기)
+
+# 총 시간
+total_time = 10
+
+# 시작 시간 정보
+start_ticks = pygame.time.get_ticks()   # 현재 시간 tick 을 받아옴
+
 # 이벤트 루프
 running = True   # 게임이 진행중인가?
 
@@ -85,6 +103,22 @@ while running:
     elif character_y_pos > screen_height - character_height:   # 화면 아래로 벗어나면 
         character_y_pos = screen_height - character_height
 
+    # 충돌 처리를 위한 rect 정보 업데이트
+    character_rect = character.get_rect()   # 캐릭터가 가지는 rectangle 정보 가져오기
+                                            # (위치는 변하지만, rectangle 정보는 항상 같은 값) 가
+    character_rect.left = character_x_pos
+    character_rect.top = character_y_pos
+
+    enemy_rect = enemy.get_rect()
+    enemy_rect.left = enemy_x_pos   # 현재 enemy의 위치 변화 없음
+    enemy_rect.top = enemy_y_pos    # 이 부분을 주석해제하면 enemy_rect에 반영되지 않음
+
+    # 충돌 체크
+    if character_rect.colliderect(enemy_rect):
+        print("충돌했어요")
+        running = False   # 게임 종료
+
+
 
     # background 이미지를 실제로 그려줌.
     screen.blit(background, (0, 0))   # 배경 그리기 / (0,0)은 가장 왼쪽 위
@@ -92,9 +126,29 @@ while running:
     # 캐릭터 그리기
     screen.blit(character, (character_x_pos, character_y_pos))
 
+    # 적 그리기
+    screen.blit(enemy, (enemy_x_pos, enemy_y_pos))
+
+    # 타이머 집어넣기
+    # 걍과 시간 계산
+    elapsed_time = (pygame.time.get_ticks() - start_ticks) / 1000
+    # 경과 시간(ms)을 1000으로 나누어서 초(s) 단위로 표시
+
+    # render(출력할 글자, Ture, 글자 색상) : 실제 글자를 그림, 인자로 문자열을 받음
+    # antialias(위신호) : 고해상도 -> 저해상도에서 생기는 계단 현상(깨진 패턴) 최소화
+    timer = game_font.render(str(int(total_time - elapsed_time)), True, (255,255,255))   # 10, 9, .. 와 같이 남은 시간을 보여줌
+    screen.blit(timer, (10, 10))
+
+    # 만약, 시간이 0 이하이면 게임 종료
+    if total_time - elapsed_time <= 0:
+        print("타임 아웃")
+        running = False
 
     # 매 프레임마다 화면을 새로 그려주는 동작
     pygame.display.update()   # 게임 화면을 다시 그리기! (계속해서 호출이 되어야 함.)
+
+# 잠시 대기
+pygame.time.delay(2000)   # 2초 정도 대기 (ms)
 
 
 # pygame 종료

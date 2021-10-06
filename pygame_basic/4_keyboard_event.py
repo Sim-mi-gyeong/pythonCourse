@@ -22,7 +22,7 @@ character_height = character_size[1]   # 캐릭터의 세로 크기
 character_x_pos =  (screen_width / 2) - (character_width / 2) # 화면 가로의 절반 크기에 해당하는 곳에 위치(가로 위치)(x, y 좌표 기준 상하좌우로 움직일 수 있음)
 character_y_pos = screen_height - character_height  # 화면 세로 크기 가장 아래에 해당하는 곳에 위치(세로 위치)
 
-# 이동할 좌쵸
+# 이동할 좌표
 to_x = 0
 to_y = 0
 
