@@ -1,5 +1,6 @@
 import pygame
-
+###############################################################
+# 기본 초기화 (반드시 해야 하는 것들)
 pygame.init()   # 초기화(반드시 필요)
 
 # 화면 크기 설정
@@ -8,37 +9,17 @@ screen_height = 640   # 세로 크기
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 # 화면 타이틀 설정 - 게임 화면이 뜰 때 글자로 표시
-pygame.display.set_caption("Nado Game")   # 게임 이름
+pygame.display.set_caption("게임 이름")   # 게임 이름
 
 # FPS
 clock = pygame.time.Clock()
+###############################################################
 
-# 배경 이미지 불러오기
-background = pygame.image.load("/Users/simmigyeong/Documents/GitHub/vscode/pythonCourse/pygame_basic/background.png")
+# 1. 사용자 게임 초기화(배경 화면, 게임 이미지, 좌표, 폰트 등)
 
-# 배경 이미지가 왼쪽 위 (0,0)을 기준으로 크기가 설정되듯이, 캐릭터 역시 캐릭터 크기에서 왼쪽 위 지점을 알아야 함. -> 계산
-# 캐릭터(스프라이트) 불러오기
-character = pygame.image.load("/Users/simmigyeong/Documents/GitHub/vscode/pythonCourse/pygame_basic/character.png")
-character_size = character.get_rect().size   # 이미지의 크기를 구해옴. (70, 70)
-character_width = character_size[0]   # 캐릭터의 가로 크기
-character_height = character_size[1]   # 캐릭터의 세로 크기
-character_x_pos =  (screen_width / 2) - (character_width / 2) # 화면 가로의 절반 크기에 해당하는 곳에 위치(가로 위치)(x, y 좌표 기준 상하좌우로 움직일 수 있음)
-character_y_pos = screen_height - character_height  # 화면 세로 크기 가장 아래에 해당하는 곳에 위치(세로 위치)
-
-# 이동할 좌표
-to_x = 0
-to_y = 0
 
 # 이동 속도
 character_spped = 0.6
-
-# 적 enemy 캐락터
-enemy = pygame.image.load("/Users/simmigyeong/Documents/GitHub/vscode/pythonCourse/pygame_basic/enemy.png")
-enemy_size = enemy.get_rect().size   # 이미지의 크기를 구해옴. (70, 70)
-enemy_width = enemy_size[0]   # 캐릭터의 가로 크기
-enemy_height = enemy_size[1]   # 캐릭터의 세로 크기
-enemy_x_pos =  (screen_width / 2) - (enemy_width / 2) # 화면 가로의 절반 크기에 해당하는 곳에 위치(가로 위치)(x, y 좌표 기준 상하좌우로 움직일 수 있음)
-enemy_y_pos = (screen_height / 2) - (enemy_height / 2) # 화면 세로 크기 가장 아래에 해당하는 곳에 위치(세로 위치)
 
 # 이벤트 루프
 running = True   # 게임이 진행중인가?
@@ -52,7 +33,7 @@ while running:
 # 10 fps : 1초 동안에 10번 동작 -> 1번에 몇 만큼 이동? -> 10만큼 -> 10*10 = 100
 # 20 fps : 1초 동안에 20번 동작 -> 1번에 5만큼! -> 5*20 = 100
 
-
+    # 2. 이벤트 처리(키보드, 마우스 등)
     for event in pygame.event.get():   # 어떤 이벤트가 발생하였는가?(마우스나 키보드의 입력 및 동작이 들어오는지 확인)
         if event.type == pygame.QUIT:   # 창이 닫히는 이벤트가 발생하였는가?(pygame 창을 껐을 때 발생)
             running = False   # 게임이 진행중이 아님(while문 탈출)
