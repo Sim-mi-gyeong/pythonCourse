@@ -14,6 +14,7 @@
 
 
 import pygame
+import random
 ###############################################################
 # 기본 초기화 (반드시 해야 하는 것들)
 pygame.init()   # 초기화(반드시 필요)
@@ -42,8 +43,19 @@ character_height = character_size[1]
 character_x_pos = (screen_width / 2) - (character_width / 2)
 character_y_pos = (screen_height - character_height)
 
+# 이동 위치
+to_x = 0
 # 이동 속도
-character_spped = 0.6
+character_speed = 10
+
+# 돌 만들기
+stone = pygame.image.load("/Users/simmigyeong/Documents/GitHub/vscode/pythonCourse/pygame_basic/enemy.png")
+stone_size = stone.get_rect().size
+stone_width = stone_size[0]
+stone_height = stone_size[1]
+stone_x_pos = random.randint(0, screen_width - stone_width)
+stone_y_pos = 0
+stone_speed = 10
 
 # 이벤트 루프
 running = True   # 게임이 진행중인가?
@@ -56,17 +68,48 @@ while running:
         if event.type == pygame.QUIT:   # 창이 닫히는 이벤트가 발생하였는가?(pygame 창을 껐을 때 발생)
             running = False   # 게임이 진행중이 아님(while문 탈출)
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                to_x -= character_speed
+            elif event.key == pygame.K_RIGHT:
+                to_x += character_speed
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                to_x = 0
    
     # 3. 게임 캐릭터 위치 정의
+    character_x_pos += to_x
+
+    if character_x_pos < 0:
+        character_x_pos = 0
+    elif character_x_pos > screen_width - character_width:
+        character_x_pos = screen_width - character_width
  
+    stone_y_pos += stone_speed
+
+    if stone_y_pos > screen_height:
+        stone_y_pos = 0
+        stone_x_pos = random.randint(0, (screen_width - stone_width))
    
     # 4. 충돌 처리
     # 충돌 처리를 위한 rect 정보 업데이트
+    character_rect = character.get_rect()
+    character_rect.left = character_x_pos
+    character_rect.top = character_y_pos
+
+    stone_rect = stone.get_rect()
+    stone_rect.left = stone_x_pos
+    stone_rect.top = stone_y_pos
+
+    if character_rect.colliderect(stone_rect):
+        print("충돌했어요")
+        running = False
 
     # 5. 화면에 그리기
     screen.blit(background, (0, 0))
     screen.blit(character, (character_x_pos, character_y_pos))
-
+    screen.blit(stone, (stone_x_pos, stone_y_pos))
     # 매 프레임마다 화면을 새로 그려주는 동작
     pygame.display.update()   # 게임 화면을 다시 그리기! (계속해서 호출이 되어야 함.)
 

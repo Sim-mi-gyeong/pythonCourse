@@ -30,7 +30,7 @@ to_x = 0
 to_y = 0
 
 # 이동 속도
-character_spped = 0.6
+character_speed = 0.6
 
 # 적 enemy 캐락터
 enemy = pygame.image.load("/Users/simmigyeong/Documents/GitHub/vscode/pythonCourse/pygame_basic/enemy.png")
@@ -69,13 +69,13 @@ while running:
 
         if event.type == pygame.KEYDOWN:   # 키가 눌렸는지 확인
             if event.key == pygame.K_LEFT:   # 캐릭터를 왼쪽으로
-                to_x -= character_spped 
+                to_x -= character_speed 
             elif event.key == pygame.K_RIGHT:   # 캐릭터를 오른쪽으로
-                to_x += character_spped 
+                to_x += character_speed 
             elif event.key == pygame.K_UP:   # 캐릭터를 위쪽으로 
-                to_y -= character_spped 
+                to_y -= character_speed 
             elif event.key == pygame.K_DOWN:   # 캐릭터를 아래쪽으로 
-                to_y += character_spped 
+                to_y += character_speed 
 
         if event.type == pygame.KEYUP:   # 방향키를 떼면 멈춤
             # x 좌표 기준 왼쪽이나 오른쪽으로 방향키를 누르고 있다가 떼면 0으로 설정

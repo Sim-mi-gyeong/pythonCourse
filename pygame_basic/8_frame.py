@@ -19,7 +19,7 @@ clock = pygame.time.Clock()
 
 
 # 이동 속도
-character_spped = 0.6
+character_speed = 0.6
 
 # 이벤트 루프
 running = True   # 게임이 진행중인가?
