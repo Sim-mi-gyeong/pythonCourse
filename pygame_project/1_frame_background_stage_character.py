@@ -22,7 +22,7 @@ image_path = os.path.join(current_path, "images")   # images 폴더 위치 반�
 
 # 배경 만들기
 background = pygame.image.load(os.path.join(image_path, "background.png"))
-
+ 
 # 스테이지 만들기
 stage = pygame.image.load(os.path.join(image_path, "stage.png"))
 stage_size = stage.get_rect().size   
