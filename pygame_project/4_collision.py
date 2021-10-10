@@ -147,7 +147,7 @@ while running:
         ball_val["pos_y"] += ball_val["to_y"]
 
     # 4. 충돌 처리
-    # 충돌 처리를 위한 rect 정보 업데이트
+
 
     # 5. 화면에 그리기
     screen.blit(background, (0,0))
