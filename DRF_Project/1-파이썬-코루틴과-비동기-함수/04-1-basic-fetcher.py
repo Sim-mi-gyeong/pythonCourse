@@ -30,7 +30,7 @@ def main():
     #     session.get(url)
 
     with requests.session() as session:
-        result = [fetcher(session, url) for url in urls] * 10
+        result = [fetcher(session, url) for url in urls]
         print(result)
 
 
@@ -38,4 +38,4 @@ if __name__ == "__main__":
     start = time.time()
     main()
     end = time.time()
-    print("걸린 시간 : ", end - start)
+    print("걸린 시간 : ", end - start)  # 1.77초
