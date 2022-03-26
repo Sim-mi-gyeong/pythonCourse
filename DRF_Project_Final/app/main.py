@@ -1,29 +1,28 @@
-from typing import Optional
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from pathlib import Path
 
-from fastapi import FastAPI  # fastapi 라이브러이의 FastAPI 클래스 가져오기
+BASE_DIR = Path(__file__).resolve().parent  # Path(__file__).resolve() : 현재 경로
 
-app = FastAPI()  # 싱글톤 패턴 app 인스턴스
+app = FastAPI()  # 싱클톤 패턴의 app 생성
 
+# app.mount("/static", StaticFiles(directory="static"), name="static")   # mount : 미들웨어, Staticfiles : CSS(웹 상에서 이미지 처리, 스타일 등 처리), js 파일 등
 
-@app.get("/")
-def read_root():
-    print("hello world")
-    return {"message": "Hello World"}
-
-
-@app.get("/hello")
-def read_fastapi_hello():
-    print("hello world")
-    return {"Hello": "Fastapi"}  # get 프로토콜을 서버로 보내면 -> 서버는 요청에 대한 응답을 return 으로
+templates = Jinja2Templates(
+    directory=BASE_DIR / "templates"
+)  # "app/templates" 와 같은 경로를 절대 경로로 설정하고자 함
 
 
-# http://127.0.0.1:8000/items/12345/abcdefg?q=hello
-@app.get("/items/{item_id}/{xyz}")
-def read_item(item_id: int, xyz: str, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q, "xyz": xyz}
-
-
-# {item_id}, {xyz} : 동적 라우팅
-
-# uvicorn 은 ASGI 구현체
-# -> python 으로 작성된 코드를 ASGI 위에서 실행 가능하도록
+# response_class=HTMLResponse : HTML을 Serving -> templates 안에 TemplateResponse 클래스를 사용해 반환
+# {id} : dynamic url - 해당 id 가 함수의 id 로 전달 -> 두번째 인자(Context)에 담아 item.html 의 id 에 들어감
+# request: Request, id: str 의 순서는 무관
+@app.get("/items/{id}", response_class=HTMLResponse)  # 요청을 받고 -> 해당하는 요청에 따라 응답, items/ 동적 라우트
+async def read_item(request: Request, id: str):
+    print("request : ", request)
+    print("dir(request) : ", dir(request))
+    print('request["headers"] : ', request["headers"])  # 요청 주체에 대한 header 종료
+    return templates.TemplateResponse(
+        "item.html", {"request": request, "id": id, "data": "hello fastapi"}
+    )  # item.html 에 데이터를 보내기
