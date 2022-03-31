@@ -108,31 +108,25 @@ browser.get(categoryListUrl)
 time.sleep(2)
 
 browser.switch_to.frame("cafe_main")
+# 카테고리 내 첫번째 게시물 클릭
+articles = browser.find_elements(By.CSS_SELECTOR, "a.article")
+articles[0].click()
+time.sleep(2)
 
 
-def scraping(page, num):
+def scraping():
 
-    #     iframe()
+    # 정보 추출
+    # 공지 게시물과도 동일한 제공 정보
+    date = browser.find_element(By.CSS_SELECTOR, ".date").text
+    title = browser.find_element(By.CSS_SELECTOR, "h3.title_text").text
+    url = browser.find_element(By.CSS_SELECTOR, ".button_url").get_attribute("href")
 
-    with_before = 0
-    articles = browser.find_elements(By.CSS_SELECTOR, "a.article")
-    print("len(articles) : ", len(articles))
-    # 게시물 이동을 위한 반복문
-    for i in range(len(articles)):
-        article = articles[i]
-        article.click()
-        time.sleep(2)
+    print("date : ", date)
+    print("title : ", title)
+    print("url : ", url)
 
-        # 정보 추출
-        # 공지 게시물과도 동일한 제공 정보
-        date = browser.find_element(By.CSS_SELECTOR, ".date").text
-        title = browser.find_element(By.CSS_SELECTOR, "h3.title_text").text
-        url = browser.find_element(By.CSS_SELECTOR, ".button_url").get_attribute("href")
-
-        print("date : ", date)
-        print("title : ", title)
-        print("url : ", url)
-
+    try:
         # 상품 가격
         priceStr = browser.find_element(By.CSS_SELECTOR, ".ProductPrice")
         #         if priceStr != None:
@@ -143,15 +137,18 @@ def scraping(page, num):
                 price = priceNumStr.replace(",", "")
                 price = int(price)
                 print("price : ", price)
-            else:
-                # 제목에서 가격 문자열 추출 시도 한 번 더
-                price = ""
-                continue
+            # else:
+            #     # 제목에서 가격 문자열 추출 시도 한 번 더
+            #     price = ""
         else:
-            continue
+            price = ""
+    except:
+        price = ""
+        pass
 
-        print("price : ", price)
+    print("price : ", price)
 
+    try:
         # 상품 상태
         status = browser.find_element(By.CSS_SELECTOR, ".detail_list")
         if status:
@@ -165,45 +162,39 @@ def scraping(page, num):
                 statusContent = ""
 
         else:
-            continue
+            statusContent = ""
+    except:
+        statusContent = ""
+        pass
 
+    try:
         # 상품 설명
         explanation = browser.find_element(By.CSS_SELECTOR, ".se-main-container")
         if explanation:
             explanation = explanation.text
         else:
-            continue
-        print("explanation : ", explanation)
+            explanation = ""
+    except:
+        explanation = ""
+        pass
 
-        # 엑셀에 작성
-        # ws.append(['제목', '가격', '상품 상태', '작성 날짜', '상품 설명', 'url'])   # 거래 완료
-        #         ws.append([title, price, statusContent, date, explanation, url])
-        ws.append([title, price, statusContent, date, url])
+    print("explanation : ", explanation)
 
-        # 뒤로 가기
-        browser.back()
-        browser.switch_to.frame("cafe_main")
+    # 엑셀에 작성
+    # ws.append(['제목', '가격', '상품 상태', '작성 날짜', '상품 설명', 'url'])   # 거래 완료
+    #         ws.append([title, price, statusContent, date, explanation, url])
+    ws.append([title, price, statusContent, date, url])
+
+    try:
+        # browser.find_element_by_link_text('다음글').click()
+        browser.find_element(By.LINK_TEXT, "다음글").click()
         time.sleep(2)
-
-    # 다음 게시글 페이지 이동
-    pages = browser.find_elements(By.CSS_SELECTOR, ".prev-next a")[page + 1 + num]
-    pages.click()
-    time.sleep(2)
+    except Exception as error:
+        print(error)
+        pass
 
 
-for i in range(total_next):
-    # 마지막 10단위 페이지 일 때
-    if i == 0:
-        # 다음 페이지 클릭 반복문
-        for page in range(10):
-            scraping(page, 0)
-    elif i > 0 and i != total_next - 1:
-        for page in range(10):
-            scraping(page, 1)
-    elif i == total_next - 1:
-        for page in range(last_page):
-            scraping(page, 1)
-
+scraping()
 
 # selenium 끝내고 엑셀 파일 저장
 browser.quit()
