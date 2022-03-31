@@ -1,3 +1,4 @@
+from attr import attrs
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -19,10 +20,10 @@ import pandas as pd
 browser = webdriver.Chrome("./chromedriver")
 browser.maximize_window()
 
-# url = "https://cafe.naver.com/joonggonara.cafe?iframe_url=/ArticleList.nhn%3Fsearch.clubid=10050146%26search.boardtype=L%26viewType=pc"
-# browser.implicitly_wait(3)
-# browser.get(url)
-# time.sleep(1)
+url = "https://cafe.naver.com/joonggonara.cafe?iframe_url=/ArticleList.nhn%3Fsearch.clubid=10050146%26search.boardtype=L%26viewType=pc"
+browser.implicitly_wait(3)
+browser.get(url)
+time.sleep(1)
 
 # # 로그인 페이지 이동
 # loginBtn = browser.find_element(By.ID, "gnb_login_button")
@@ -78,6 +79,7 @@ menu = ["휴대폰", "태블릿", "주변기기/악세사리", "노트북", "데
 menuIds = [mobilePhoneId, tabletId, sideDeviceId, laptopId, desktopId, monitorId]
 
 # 필요한 카테고리 열기
+# categoryListUrls = f"{baseUrl}?iframe_url=/ArticleList.nhn%3Fsearch.clubid={junggonaraId}%26search.menuid={menuIds}%26search.boardtype=L"
 categoryListUrl = f"{baseUrl}?iframe_url=/ArticleList.nhn%3Fsearch.clubid={junggonaraId}%26search.menuid={mobilePhoneId}%26search.boardtype=L"
 
 total_page = 1000
@@ -93,8 +95,7 @@ today = now.strftime("%Y-%m-%d")
 # 엑셀 작성
 wb = Workbook(write_only=True)
 ws = wb.create_sheet(today)
-# ws.append(['작성 날짜', '제목', 'url', '가격', '상품 상태', '상품 설명'])
-ws.append(["사이트", "카테고리", "제목", "가격", "상품 상태", "작성 날짜", "상품 설명", "url"])
+ws.append(["사이트", "카테고리", "제목", "가격", "상품 상태", "작성 날짜", "상품 설명", "url", "거래 상태"])
 
 
 def iframe():
@@ -113,8 +114,7 @@ articles = browser.find_elements(By.CSS_SELECTOR, "a.article")
 articles[10].click()
 time.sleep(2)
 
-# 다음글 표시가 없을 때까지 반복
-while True:
+for i in range(5):
     soup = BeautifulSoup(browser.page_source, "lxml")
     # scraping()
     # 정보 추출
@@ -128,6 +128,10 @@ while True:
         title = browser.find_element(By.CSS_SELECTOR, "h3.title_text").text.strip(" ")
     except:
         title = None
+    # try:
+    #     title = browser.find_element(By.CSS_SELECTOR, "p.ProductName").text
+    # except:
+    #     title = None
 
     try:
         url = browser.find_element(By.CSS_SELECTOR, ".button_url").get_attribute("href")
@@ -146,8 +150,6 @@ while True:
         if tradeStatus:
             # tradeStatus = tradeStatus.text
             tradeStatus = tradeStatus[0].text
-        else:
-            tradeStatus = None
     except:
         tradeStatus = None
         pass
@@ -213,6 +215,7 @@ while True:
     ws.append(["중고나라", "휴대폰", title, price, statusContent, date, explanation, url, tradeStatus])
 
     try:
+        # browser.find_element_by_link_text('다음글').click()
         browser.find_element(By.LINK_TEXT, "다음글").click()
         time.sleep(2)
     except NoSuchElementException:  # 다음글 표시가 없는 경우 종료
@@ -223,6 +226,4 @@ while True:
 
 # selenium 끝내고 엑셀 파일 저장
 browser.quit()
-wb.save(
-    f"/Users/simmigyesong/Documents/GitHub/vscode/pythonCourse/webScraping/webScrapingCapstone/중고나라_{menu[0]}_{today}_게시물.xlsx"
-)
+wb.save(f"webScraping/webScrapingCapstone/중고나라_{menu[0]}_{today}_게시물.xlsx")
