@@ -15,7 +15,7 @@
 
 ## github 에 코드 올리기
 - 토큰 발급
-- 토큰 복사 : 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
+- 토큰 복사 : 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
 
 ## VPS : 가상 사설 서버 구축
 
@@ -24,9 +24,9 @@
 - ssh 를 사용하여 연결 (브라우저에서 접속)
 - sudo apt-get update
 - sudo apt-get -y upgrade
-- sudo apt-get intall build-essential
+- sudo apt-get install build-essential
 - sudo apt-get install curl git vim python python3-pip
-- torch .gitconfig
+- touch .gitconfig
 - git config --global user.name Sim-mi-gyeong
 - git config --global user.email smegyeong@gmail.com
 - git config --global --list
