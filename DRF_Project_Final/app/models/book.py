@@ -7,7 +7,7 @@ class BookModel(Model):
     keyword: str
     publisher: str
     price: int
-    gaimageme: str
+    image: str
 
     class Config:
         collection = "books"  # collection Name 을 지정 가능
