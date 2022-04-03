@@ -11,3 +11,29 @@
 4. book 모델 개발
 
 5. db에 insert
+
+
+## github 에 코드 올리기
+- 토큰 발급
+- 토큰 복사 : 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
+
+## VPS : 가상 사설 서버 구축
+
+- AWS Lightsail 사용
+- 인스턴스 생성
+- ssh 를 사용하여 연결 (브라우저에서 접속)
+- sudo apt-get update
+- sudo apt-get -y upgrade
+- sudo apt-get intall build-essential
+- sudo apt-get install curl git vim python python3-pip
+- torch .gitconfig
+- git config --global user.name Sim-mi-gyeong
+- git config --global user.email smegyeong@gmail.com
+- git config --global --list
+- git clone <프로젝트>
+- cd <프로젝트>
+- vi secrets.json
+- sudo pip install -r requirements.txt
+- sudo python3 server.py
+- ip 접속
+- 배포 성공!!
