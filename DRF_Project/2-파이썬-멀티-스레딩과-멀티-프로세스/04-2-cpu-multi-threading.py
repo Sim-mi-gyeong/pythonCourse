@@ -31,4 +31,4 @@ if __name__ == "__main__":
     start = time.time()
     main()
     end = time.time()
-    print("걸린 시간 : ", end - start)  # 0.0567초 -> 0.0328초
+    print("걸린 시간 : ", end - start)  # 0.0567초 -> 0.0328초 / 0.96초
