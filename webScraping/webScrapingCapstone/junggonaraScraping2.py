@@ -3,6 +3,12 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 import requests
 from bs4 import BeautifulSoup
@@ -16,19 +22,39 @@ import datetime
 import numpy as np
 import pandas as pd
 
-browser = webdriver.Chrome("./chromedriver")
+
+def set_chrome_driver():
+    chrome_options = webdriver.ChromeOptions()
+    browser = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()), options=chrome_options
+    )
+    return browser
+
+
+browser = set_chrome_driver()
+# browser = webdriver.Chrome("./chromedriver")
 browser.maximize_window()
 
-# url = "https://cafe.naver.com/joonggonara.cafe?iframe_url=/ArticleList.nhn%3Fsearch.clubid=10050146%26search.boardtype=L%26viewType=pc"
-# browser.implicitly_wait(3)
-# browser.get(url)
-# time.sleep(1)
+url = "https://cafe.naver.com/joonggonara.cafe?iframe_url=/ArticleList.nhn%3Fsearch.clubid=10050146%26search.boardtype=L%26viewType=pc"
+browser.get(url)
+time.sleep(1)
 
-# # 로그인 페이지 이동
-# loginBtn = browser.find_element(By.ID, "gnb_login_button")
-# loginBtn.click()
-# # loginBtn.send_keys(Keys.ENTER)
-# time.sleep(1)
+# 로그인 페이지 이동
+loginBtn = browser.find_element(By.ID, "gnb_login_button")
+loginBtn.click()
+time.sleep(1)
+
+# 일회용 번호 클릭
+loginOneBtn = browser.find_element(By.ID, "ones")
+loginOneBtn.click()
+
+oneNum = 19348438
+inputNum = browser.find_element(By.ID, "disposable")
+inputNum.click()
+inputNum.send_keys(oneNum)
+loginBtn = browser.find_element(By.ID, "otnlog.login")
+loginBtn.click()
+# browser.switch_to.frame("cafe_main")
 
 # # ID, Password 입력할 곳을 찾고 입력(copy)
 
@@ -93,8 +119,7 @@ today = now.strftime("%Y-%m-%d")
 # 엑셀 작성
 wb = Workbook(write_only=True)
 ws = wb.create_sheet(today)
-# ws.append(['작성 날짜', '제목', 'url', '가격', '상품 상태', '상품 설명'])
-ws.append(["사이트", "카테고리", "제목", "가격", "상품 상태", "작성 날짜", "상품 설명", "url"])
+ws.append(["사이트", "카테고리", "제목", "가격", "상품 상태", "작성 날짜", "상품 설명", "url", "거래 상태"])
 
 
 def iframe():
@@ -111,14 +136,27 @@ browser.switch_to.frame("cafe_main")
 # 카테고리 내 첫번째 게시물 클릭
 articles = browser.find_elements(By.CSS_SELECTOR, "a.article")
 articles[10].click()
-time.sleep(2)
+# midUrl = "https://cafe.naver.com/joonggonara/907902283"
+# browser.get(midUrl)
+time.sleep(5)
 
-# 다음글 표시가 없을 때까지 반복
+# 다음글 표시가 없을 때까지 반복 - 50번마다 저장
+i = 0
 while True:
-    soup = BeautifulSoup(browser.page_source, "lxml")
+    # for _ in range(5):
+    i += 1
+
+    # soup = BeautifulSoup(browser.page_source, "lxml")
     # scraping()
     # 정보 추출
     # 공지 게시물과도 동일한 제공 정보
+    # try:
+    #     WebDriverWait(browser, 10).until(
+    #         EC.presence_of_element_located(By.CSS_SELECTOR, "h3.title_text")
+    #     )
+    # except:
+    #     break
+
     try:
         date = browser.find_element(By.CSS_SELECTOR, ".date").text
     except:
@@ -140,12 +178,15 @@ while True:
 
     try:
         # 거래 상태
-        tradeStatus = soup.find_all(
-            "em", attrs={"class": ["SaleLabel safety", "SaleLabel sold", "SaleLabel selling"]}
+        tradeStatus = browser.find_element(By.CSS_SELECTOR, ".ProductName").find_element(
+            By.TAG_NAME, "em"
         )
+        # tradeStatus = soup.find_all(
+        #     "em", attrs={"class": ["SaleLabel safety", "SaleLabel sold", "SaleLabel selling"]}
+        # )
         if tradeStatus:
-            # tradeStatus = tradeStatus.text
-            tradeStatus = tradeStatus[0].text
+            # tradeStatus = tradeStatus[0].text
+            tradeStatus = tradeStatus.text
         else:
             tradeStatus = None
     except:
@@ -214,15 +255,21 @@ while True:
 
     try:
         browser.find_element(By.LINK_TEXT, "다음글").click()
-        time.sleep(2)
+        # 기다리기
+        time.sleep(5)
+
     except NoSuchElementException:  # 다음글 표시가 없는 경우 종료
         break
     except Exception as error:
         print(error)
         pass
 
+    # if i % 50 == 0:
+    #     wb.save(f"중고나라_{menu[0]}_2_{today}_게시물.xlsx")
+
 # selenium 끝내고 엑셀 파일 저장
-browser.quit()
-wb.save(
-    f"/Users/simmigyesong/Documents/GitHub/vscode/pythonCourse/webScraping/webScrapingCapstone/중고나라_{menu[0]}_{today}_게시물.xlsx"
-)
+# browser.quit()
+# wb.save(f"중고나라_{menu[0]}_2_{today}_게시물.xlsx")
+wb.save(f"중고나라_{menu[0]}_9_{today}_게시물.xlsx")
+
+# 7-8-(9) 합치기
